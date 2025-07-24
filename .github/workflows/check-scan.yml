@@ -1,0 +1,117 @@
+name: Terraform Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  checkov:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: vulnerable-terraform/
+          framework: terraform
+          output_format: json,sarif
+          output_file_path: .
+          soft_fail: true  # Don't fail the workflow
+          skip_check: CKV_AWS_18  # Example of skipping a specific check
+      
+      - name: Upload Checkov JSON results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-results-json
+          path: results_json.json
+          retention-days: 30
+      
+      - name: Upload SARIF results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-results-sarif
+          path: results_sarif.sarif
+          retention-days: 30
+      
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## 🔒 Checkov Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Parse the JSON results
+          if [ -f results_json.json ]; then
+            PASSED=$(jq '.summary.passed' results_json.json)
+            FAILED=$(jq '.summary.failed' results_json.json)
+            SKIPPED=$(jq '.summary.skipped' results_json.json)
+            
+            echo "### Summary" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Passed: $PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "- ❌ Failed: $FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "- ⏭️ Skipped: $SKIPPED" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # List critical findings
+            echo "### Critical Findings" >> $GITHUB_STEP_SUMMARY
+            jq -r '.results.failed_checks[] | select(.severity == "CRITICAL") | "- \(.check_id): \(.check_name) in `\(.file_path)`"' results_json.json >> $GITHUB_STEP_SUMMARY || echo "No critical findings" >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Comment PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const results = JSON.parse(fs.readFileSync('results_json.json', 'utf8'));
+              const { passed, failed, skipped } = results.summary;
+              
+              // Group findings by severity
+              const failedChecks = results.results.failed_checks || [];
+              const critical = failedChecks.filter(c => c.severity === 'CRITICAL').length;
+              const high = failedChecks.filter(c => c.severity === 'HIGH').length;
+              const medium = failedChecks.filter(c => c.severity === 'MEDIUM').length;
+              const low = failedChecks.filter(c => c.severity === 'LOW').length;
+              
+              const comment = `## 🔒 Checkov Security Scan Results
+              
+              **Summary:** ✅ ${passed} passed, ❌ ${failed} failed, ⏭️ ${skipped} skipped
+              
+              **Severity Breakdown:**
+              - 🔴 Critical: ${critical}
+              - 🟠 High: ${high}
+              - 🟡 Medium: ${medium}
+              - 🟢 Low: ${low}
+              
+              ${failed > 0 ? '### 🚨 Action Required\nRun the MCP analyzer in Claude Desktop for detailed remediation guidance:\n```\nAnalyze the Checkov findings for PR #' + context.issue.number + '\n```' : '### ✅ All security checks passed!'}
+              
+              <details>
+              <summary>View detailed report</summary>
+              
+              [Download full report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+              
+              </details>`;
+              
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.error('Error parsing Checkov results:', error);
+            }
