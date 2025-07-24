@@ -6,13 +6,13 @@ An innovative Model Context Protocol (MCP) server that connects Claude Desktop t
 
 I gave Claude access to my GitHub Action workflows, asked him to present findings and fix vulnerabilties. He did this in a matter of seconds.
 
-**[Prompt](screenshots/1.png)**
+**[💬 Prompt](screenshots/1.png)**
   
-**[Report](report.md)**
+**[📝 Report](report.md)**
   
-**[Fixed Terraform](fixed-terraform.tf)**
+**[🛠️ Fixed Terraform](fixed-terraform.tf)**
   
-**[Changes Made](changes-made.md)**
+**[🔄 Changes Made](changes-made.md)**
 
 ## 🚀 Overview
 
