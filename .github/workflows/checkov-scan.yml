@@ -23,12 +23,12 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: vulnerable-terraform/
+          directory: .
+          file: vulnerable-terraform/main.tf
           framework: terraform
           output_format: json,sarif
           output_file_path: .
-          soft_fail: true  # Don't fail the workflow
-          skip_check: CKV_AWS_18  # Example of skipping a specific check
+          soft_fail: true
       
       - name: Upload Checkov JSON results
         if: always()
