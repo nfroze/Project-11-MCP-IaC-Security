@@ -1,6 +1,6 @@
 # 🔎 Project 11: MCP Powered IaC Security Remediation
 
-An innovative Model Context Protocol (MCP) server that connects Claude Desktop to GitHub Actions, analyses Checkov security findings, and provides instant Terraform remediation and guidance.
+An innovative Model Context Protocol (MCP) server that connects Claude Desktop to GitHub Actions, analyses Checkov security findings, and provides instant Terraform remediation guidance.
 
 ## TLDR
 
@@ -8,11 +8,11 @@ I gave Claude access to my GitHub Action workflows, asked him to present finding
 
 **[💬 Prompt](screenshots/1.png)**
   
-**[📝 Report](documents/report.md)**
+**[📝 Report](report.md)**
   
-**[🛠️ Fixed Terraform](documents/fixed-terraform.tf)**
+**[🛠️ Fixed Terraform](fixed-terraform.tf)**
   
-**[🔄 Changes Made](documents/changes-made.md)**
+**[🔄 Changes Made](changes-made.md)**
 
 **[✅ Summary](screenshots/2.png)**
 
@@ -46,7 +46,7 @@ Transforms hours of manual security remediation into seconds of AI-powered analy
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/Project-11-MCP-Powered-IaC-Security-Remediation.git
+git clone https://github.com/nfroze/Project-11-MCP-Powered-IaC-Security-Remediation.git
 cd Project-11-MCP-Powered-IaC-Security-Remediation
 ```
 
@@ -70,7 +70,7 @@ Add to your Claude Desktop configuration file:
 ```json
 {
   "mcpServers": {
-    "checkov-analyzer": {
+    "checkov-analyser": {
       "command": "node",
       "args": ["/absolute/path/to/mcp-server/index.js"],
       "env": {
@@ -80,6 +80,16 @@ Add to your Claude Desktop configuration file:
   }
 }
 ```
+
+## 🚦 Usage
+
+### Example Prompts
+
+"Analyse the latest Checkov scan for nfroze/Project-11-MCP-Powered-IaC-Security-Remediation"
+
+"Create a visual security report and fix the critical issues in my Terraform"
+
+"What are the top security risks in my infrastructure?"
 
 ## 🔍 How It Works
 
@@ -131,7 +141,7 @@ Provides specific fix for a single security issue
 Creates comprehensive report with all findings and fixes
 
 ### `get_terraform_file`
-Searches repo for .tf files for context
+Retrieves the content of Terraform files from the repository
 
 ## 🚀 Future Enhancements
 
