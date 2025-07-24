@@ -23,8 +23,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: .
-          file: vulnerable-terraform/main.tf
+          directory: vulnerable-terraform/
           framework: terraform
           output_format: json,sarif
           output_file_path: .
