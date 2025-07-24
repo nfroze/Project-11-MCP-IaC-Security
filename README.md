@@ -6,7 +6,9 @@ An innovative Model Context Protocol (MCP) server that connects Claude Desktop t
 
 I gave Claude access to my GitHub Action workflows, asked him to present findings and fix vulnerabilties. He did this in a matter of seconds.
 
-**[💬 Prompt](screenshots/1.png)**
+**[⚠️Checkov Findings](screenshots/1.png)**
+
+**[💬 Prompt](screenshots/2.png)**
   
 **[📝 Report](documents/report.md)**
   
@@ -14,7 +16,9 @@ I gave Claude access to my GitHub Action workflows, asked him to present finding
   
 **[🔄 Changes Made](documents/changes-made.md)**
 
-**[✅ Summary](screenshots/2.png)**
+**[✅ Summary](screenshots/3.png)**
+
+**[👀 What Claude Can See](screenshots/4.png)**
 
 ## 🚀 Overview
 
