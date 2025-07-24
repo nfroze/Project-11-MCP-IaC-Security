@@ -1,0 +1,32 @@
+{
+  "name": "checkov-analyzer-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for analyzing Checkov security findings and providing Terraform remediation",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "checkov",
+    "terraform",
+    "security",
+    "devsecops",
+    "iac",
+    "remediation"
+  ],
+  "author": "Noah Frost",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "@octokit/rest": "^20.0.2",
+    "adm-zip": "^0.5.10",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
