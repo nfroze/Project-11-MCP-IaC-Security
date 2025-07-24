@@ -276,6 +276,28 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ['owner', 'repo']
         }
+      },
+      {
+        name: 'get_terraform_file',
+        description: 'Get the content of a Terraform file from the repository',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            owner: {
+              type: 'string',
+              description: 'GitHub repository owner'
+            },
+            repo: {
+              type: 'string',
+              description: 'GitHub repository name'  
+            },
+            file_path: {
+              type: 'string',
+              description: 'Path to the Terraform file (e.g., main.tf or vulnerable-terraform/main.tf)'
+            }
+          },
+          required: ['owner', 'repo', 'file_path']
+        }
       }
     ]
   };
@@ -298,6 +320,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'generate_security_report':
         result = await generateSecurityReport(args);
         break;
+      case 'get_terraform_file': {
+        try {
+          // Fix the path if it's just the filename or starts with /
+          let filePath = args.file_path;
+          if (filePath === '/main.tf' || filePath === 'main.tf') {
+            filePath = 'vulnerable-terraform/main.tf';
+          } else if (filePath.startsWith('/') && !filePath.includes('vulnerable-terraform')) {
+            filePath = `vulnerable-terraform${filePath}`;
+          }
+          
+          const { data: fileData } = await octokit.repos.getContent({
+            owner: args.owner,
+            repo: args.repo,
+            path: filePath
+          });
+          
+          // Decode the base64 content
+          const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
+          
+          result = JSON.stringify({
+            file_path: filePath,
+            content: content,
+            size: fileData.size,
+            sha: fileData.sha
+          }, null, 2);
+        } catch (error) {
+          result = JSON.stringify({
+            error: `Failed to fetch file: ${error.message}`,
+            file_path: args.file_path
+          }, null, 2);
+        }
+        break;
+      }
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
