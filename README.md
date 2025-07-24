@@ -8,11 +8,11 @@ I gave Claude access to my GitHub Action workflows, asked him to present finding
 
 **[💬 Prompt](screenshots/1.png)**
   
-**[📝 Report](report.md)**
+**[📝 Report](documents/report.md)**
   
-**[🛠️ Fixed Terraform](fixed-terraform.tf)**
+**[🛠️ Fixed Terraform](documents/fixed-terraform.tf)**
   
-**[🔄 Changes Made](changes-made.md)**
+**[🔄 Changes Made](documents/changes-made.md)**
 
 **[✅ Summary](screenshots/2.png)**
 
