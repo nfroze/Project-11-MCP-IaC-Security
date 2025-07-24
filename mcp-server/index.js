@@ -113,11 +113,17 @@ async function analyzeLatestScan({ owner, repo }) {
 
 async function getRemediation({ owner, repo, check_id, file_path }) {
   try {
+    // Fix the path if it starts with / and doesn't include vulnerable-terraform
+    let correctedPath = file_path;
+    if (file_path.startsWith('/') && !file_path.includes('vulnerable-terraform')) {
+      correctedPath = `vulnerable-terraform${file_path}`;
+    }
+    
     // Get the terraform file content
     const { data } = await octokit.repos.getContent({
       owner,
       repo,
-      path: file_path
+      path: correctedPath  // Use the corrected path
     });
 
     const fileContent = Buffer.from(data.content, 'base64').toString('utf-8');
@@ -128,7 +134,9 @@ async function getRemediation({ owner, repo, check_id, file_path }) {
     return JSON.stringify(remediationResult, null, 2);
   } catch (error) {
     return JSON.stringify({
-      error: `Failed to get remediation: ${error.message}`
+      error: `Failed to get remediation: ${error.message}`,
+      attempted_path: correctedPath,  // Show what path we tried
+      original_path: file_path
     }, null, 2);
   }
 }
