@@ -7,10 +7,9 @@ An innovative Model Context Protocol (MCP) server that connects Claude Desktop t
 I gave Claude access to my GitHub Action workflows, asked him to present findings and fix vulnerabilties. He did this in a matter of seconds.
 
 ![Prompt](screenshots/1.png)
-![Report]()
-![Fixed Terraform](screenshots/1.png)
-![Changes Made](screenshots/1.png)
-
+![Report](fixed-terraform.md)
+![Fixed Terraform](fixed-terraform.md)
+![Changes Made](changes-made.md)
 
 
 ## 🚀 Overview
@@ -78,66 +77,6 @@ Add to your Claude Desktop configuration file:
 }
 ```
 
-## 🚦 Usage
-
-### 1. Trigger a Checkov Scan
-Push code to the repository or manually trigger the GitHub Actions workflow:
-```bash
-git push origin main
-```
-
-### 2. Analyse Results in Claude
-Open Claude Desktop and try these commands:
-
-```
-Analyse the latest Checkov scan for my terraform project
-```
-
-```
-Show me how to fix the critical S3 security findings
-```
-
-```
-Generate a complete security report with remediations
-```
-
-### 3. Example Interaction
-
-**You**: "What security issues did Checkov find in my latest scan?"
-
-**Claude**: "I'll analyse your latest Checkov scan results...
-
-Found **15 security issues** in your Terraform configuration:
-
-**🔴 Critical (7)**
-- CKV_AWS_16: RDS instance storage not encrypted
-- CKV_AWS_17: Hardcoded database password
-- CKV_AWS_53-56: S3 bucket allows public access
-
-**🟠 High (5)**
-- CKV_AWS_23: Security group allows unrestricted access
-- CKV_AWS_63: IAM policy uses wildcard permissions
-
-Would you like me to show you how to fix the critical issues?"
-
-## 📁 Project Structure
-
-```
-├── vulnerable-terraform/     # Intentionally vulnerable IaC for testing
-│   └── main.tf
-├── .github/
-│   └── workflows/
-│       └── checkov-scan.yml # Automated security scanning
-├── mcp-server/             # MCP implementation
-│   ├── index.js           # Main server
-│   ├── package.json       # Dependencies
-│   └── tools/            # Modular components
-│       ├── github-client.js
-│       ├── checkov-parser.js
-│       └── remediation-engine.js
-└── README.md
-```
-
 ## 🔍 How It Works
 
 1. **GitHub Actions** runs Checkov on every push
@@ -186,6 +125,9 @@ Provides specific fix for a single security issue
 
 ### `generate_security_report`
 Creates comprehensive report with all findings and fixes
+
+### `get_terraform_file`
+Searches repo for .tf files for context
 
 ## 🚀 Future Enhancements
 
