@@ -193,7 +193,7 @@ async function generateSecurityReport({ owner, repo }) {
 // Create server
 const server = new Server(
   {
-    name: 'checkov-analyzer',
+    name: 'checkov-analyser',
     version: '1.0.0',
   },
   {
@@ -318,7 +318,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('Checkov Analyzer MCP Server started');
+  console.error('Checkov Analyser MCP Server started');
 }
 
 main().catch((error) => {
