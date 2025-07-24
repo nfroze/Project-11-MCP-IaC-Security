@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkov Security Scan Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .summary-card .number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .summary-card.critical .number {
+            color: #ff4757;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+        }
+        
+        .summary-card.high .number {
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+        
+        .summary-card.medium .number {
+            color: #ffd43b;
+            text-shadow: 0 0 20px rgba(255, 212, 59, 0.5);
+        }
+        
+        .summary-card.passed .number {
+            color: #51cf66;
+            text-shadow: 0 0 20px rgba(81, 207, 102, 0.5);
+        }
+        
+        .summary-card .label {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .findings-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .findings-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .severity-badge.critical {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+            border: 1px solid #ff4757;
+        }
+        
+        .severity-badge.high {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+        }
+        
+        .severity-badge.medium {
+            background: rgba(255, 212, 59, 0.2);
+            color: #ffd43b;
+            border: 1px solid #ffd43b;
+        }
+        
+        .finding-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .finding-card:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .finding-card.critical {
+            border-left-color: #ff4757;
+        }
+        
+        .finding-card.high {
+            border-left-color: #ff6b6b;
+        }
+        
+        .finding-card.medium {
+            border-left-color: #ffd43b;
+        }
+        
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .finding-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            flex: 1;
+        }
+        
+        .finding-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #666;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+        
+        .finding-details {
+            color: #bbb;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .finding-resource {
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .remediation-box {
+            background: rgba(81, 207, 102, 0.1);
+            border: 1px solid rgba(81, 207, 102, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .remediation-box h4 {
+            color: #51cf66;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .remediation-code {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .critical-alert {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Checkov Security Scan Report</h1>
+            <div class="subtitle">Repository: nfroze/Project-11-MCP-Powered-IaC-Security-Remediation</div>
+            <div class="subtitle">Scan Date: July 24, 2025 | Checkov Version: 3.2.454</div>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="summary-card critical critical-alert">
+                <div class="number">6</div>
+                <div class="label">Critical Issues</div>
+            </div>
+            <div class="summary-card high">
+                <div class="number">5</div>
+                <div class="label">High Issues</div>
+            </div>
+            <div class="summary-card medium">
+                <div class="number">32</div>
+                <div class="label">Medium Issues</div>
+            </div>
+            <div class="summary-card passed">
+                <div class="number">11</div>
+                <div class="label">Passed Checks</div>
+            </div>
+        </div>
+        
+        <div class="findings-section">
+            <h2>
+                <span class="severity-badge critical">Critical</span>
+                Critical Security Issues
+            </h2>
+            
+            <div class="finding-card critical">
+                <div class="finding-header">
+                    <div class="finding-title">RDS Instance Storage Not Encrypted at Rest</div>
+                    <div class="finding-id">CKV_AWS_16</div>
+                </div>
+                <div class="finding-details">
+                    RDS instance storage should be encrypted to protect sensitive data at rest from unauthorized access.
+                </div>
+                <div class="finding-resource">Resource: aws_db_instance.database</div>
+                <div class="remediation-box">
+                    <h4>How to Fix:</h4>
+                    <div class="remediation-code">resource "aws_db_instance" "database" {
+  # ... existing configuration ...
+  
+  storage_encrypted = true
+  kms_key_id       = aws_kms_key.rds.arn  # Optional: specify custom KMS key
+}</div>
+                </div>
+            </div>
+            
+            <div class="finding-card critical">
+                <div class="finding-header">
+                    <div class="finding-title">RDS Database Password Hardcoded</div>
+                    <div class="finding-id">CKV_AWS_17</div>
+                </div>
+                <div class="finding-details">
+                    Database passwords should never be hardcoded in Terraform files. Use AWS Secrets Manager or SSM Parameter Store.
+                </div>
+                <div class="finding-resource">Resource: aws_db_instance.database</div>
+                <div class="remediation-box">
+                    <h4>How to Fix:</h4>
+                    <div class="remediation-code"># Create a random password
+resource "random_password" "db_password" {
+  length  = 32
+  special = true
+}
+
+# Store in AWS Secrets Manager
+resource "aws_secretsmanager_secret" "db_password" {
+  name = "myapp-db-password"
+}
+
+resource "aws_secretsmanager_secret_version" "db_password" {
+  secret_id     = aws_secretsmanager_secret.db_password.id
+  secret_string = random_password.db_password.result
+}
+
+# Use in RDS instance
+resource "aws_db_instance" "database" {
+  # ... existing configuration ...
+  password = random_password.db_password.result
+}</div>
+                </div>
+            </div>
+            
+            <div class="finding-card critical">
+                <div class="finding-header">
+                    <div class="finding-title">S3 Bucket Missing Public Access Block Configuration</div>
+                    <div class="finding-id">CKV_AWS_53-56</div>
+                </div>
+                <div class="finding-details">
+                    All four S3 public access block settings must be enabled to prevent unauthorized public access to bucket data.
+                </div>
+                <div class="finding-resource">Resource: aws_s3_bucket_public_access_block.data</div>
+                <div class="remediation-box">
+                    <h4>How to Fix:</h4>
+                    <div class="remediation-code">resource "aws_s3_bucket_public_access_block" "data" {
+  bucket = aws_s3_bucket.data.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="findings-section">
+            <h2>
+                <span class="severity-badge high">High</span>
+                High Security Issues
+            </h2>
+            
+            <div class="finding-card high">
+                <div class="finding-header">
+                    <div class="finding-title">RDS Instance Missing Backup Policy</div>
+                    <div class="finding-id">CKV_AWS_133</div>
+                </div>
+                <div class="finding-details">
+                    RDS instances should have automated backups enabled with appropriate retention period for disaster recovery.
+                </div>
+                <div class="finding-resource">Resource: aws_db_instance.database</div>
+                <div class="remediation-box">
+                    <h4>How to Fix:</h4>
+                    <div class="remediation-code">resource "aws_db_instance" "database" {
+  # ... existing configuration ...
+  
+  backup_retention_period = 7  # Retain backups for 7 days
+  backup_window          = "03:00-04:00"  # Set preferred backup window
+}</div>
+                </div>
+            </div>
+            
+            <div class="finding-card high">
+                <div class="finding-header">
+                    <div class="finding-title">S3 Bucket Versioning Not Enabled</div>
+                    <div class="finding-id">CKV_AWS_21</div>
+                </div>
+                <div class="finding-details">
+                    S3 bucket versioning should be enabled to protect against accidental deletion and provide data recovery capabilities.
+                </div>
+                <div class="finding-resource">Resource: aws_s3_bucket.data</div>
+                <div class="remediation-box">
+                    <h4>How to Fix:</h4>
+                    <div class="remediation-code">resource "aws_s3_bucket_versioning" "data" {
+  bucket = aws_s3_bucket.data.id
+  
+  versioning_configuration {
+    status = "Enabled"
+  }
+}</div>
+                </div>
+            </div>
+            
+            <div class="finding-card high">
+                <div class="finding-header">
+                    <div class="finding-title">Security Group Allows Unrestricted Ingress</div>
+                    <div class="finding-id">CKV_AWS_23, CKV_AWS_260</div>
+                </div>
+                <div class="finding-details">
+                    Security group allows ingress from 0.0.0.0/0 on all ports, exposing resources to potential attacks from anywhere on the internet.
+                </div>
+                <div class="finding-resource">Resource: aws_security_group.wide_open</div>
+                <div class="remediation-box">
+                    <h4>How to Fix:</h4>
+                    <div class="remediation-code">resource "aws_security_group" "web" {
+  name        = "web-security-group"
+  description = "Security group for web servers"
+  vpc_id      = aws_vpc.main.id
+
+  # Allow HTTP from specific sources only
+  ingress {
+    description = "HTTP from load balancer"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]  # Replace with your VPC CIDR
+  }
+
+  # Allow HTTPS from CloudFront
+  ingress {
+    description = "HTTPS from CloudFront"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]  # Or use prefix list for CloudFront
+  }
+
+  # Restrict egress to specific destinations
+  egress {
+    description = "HTTPS to AWS services"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Consider restricting further
+  }
+}</div>
+                </div>
+            </div>
+            
+            <div class="finding-card high">
+                <div class="finding-header">
+                    <div class="finding-title">IAM Policy Uses Wildcard Actions</div>
+                    <div class="finding-id">CKV_AWS_63</div>
+                </div>
+                <div class="finding-details">
+                    IAM policies should follow the principle of least privilege and avoid using wildcard (*) actions.
+                </div>
+                <div class="finding-resource">Resource: aws_iam_policy.admin</div>
+                <div class="remediation-box">
+                    <h4>How to Fix:</h4>
+                    <div class="remediation-code">resource "aws_iam_policy" "app_policy" {
+  name        = "app-specific-policy"
+  description = "Policy with specific permissions for application"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+        Resource = [
+          "${aws_s3_bucket.data.arn}/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBSnapshots"
+        ]
+        Resource = [
+          aws_db_instance.database.arn
+        ]
+      }
+    ]
+  })
+}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="findings-section">
+            <h2>
+                <span class="severity-badge medium">Medium</span>
+                Medium Security Issues Summary
+            </h2>
+            <div class="finding-details">
+                <p>The scan identified 32 medium-severity issues that should be addressed to improve overall security posture:</p>
+                <ul style="margin-top: 15px; margin-left: 20px; line-height: 1.8;">
+                    <li><strong>EC2 Instance Security:</strong> Enable IMDSv2, use encrypted EBS volumes, enable detailed monitoring, attach IAM role</li>
+                    <li><strong>RDS Configuration:</strong> Enable enhanced monitoring, Multi-AZ deployment, deletion protection, automatic minor upgrades</li>
+                    <li><strong>S3 Enhancements:</strong> Enable server-side encryption with KMS, lifecycle policies, event notifications</li>
+                    <li><strong>VPC Security:</strong> Enable VPC flow logs, restrict default security group</li>
+                    <li><strong>Additional Controls:</strong> Implement proper egress rules, avoid public IPs where possible</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Generated by Checkov Security Analyzer | For detailed remediation steps, consult the AWS security best practices documentation</p>
+        </div>
+    </div>
+</body>
+</html>

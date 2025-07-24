@@ -2,6 +2,14 @@
 
 An innovative Model Context Protocol (MCP) server that connects Claude Desktop to GitHub Actions, analyses Checkov security findings, and provides instant Terraform remediation guidance.
 
+## TLDR
+
+I gave Claude access to my GitHub Action workflows, asked him to present findings and fix vulnerabilties. He did this in a matter of seconds.
+
+[Findings]
+
+
+
 ## 🚀 Overview
 
 This project demonstrates the future of AI-augmented DevSecOps by creating an MCP server that:
