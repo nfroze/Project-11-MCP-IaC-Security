@@ -1,6 +1,6 @@
 # 🔎 Project 11: MCP Powered IaC Security Remediation
 
-An innovative Model Context Protocol (MCP) server that connects Claude Desktop to GitHub Actions, analyses Checkov security findings, and provides instant Terraform remediation guidance.
+An innovative Model Context Protocol (MCP) server that connects Claude Desktop to GitHub Actions, analyses Checkov security findings, and provides instant Terraform remediation and guidance.
 
 ## TLDR
 
