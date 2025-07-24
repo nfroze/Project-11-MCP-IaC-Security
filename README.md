@@ -7,8 +7,8 @@ An innovative Model Context Protocol (MCP) server that connects Claude Desktop t
 I gave Claude access to my GitHub Action workflows, asked him to present findings and fix vulnerabilties. He did this in a matter of seconds.
 
 ![Prompt](screenshots/1.png)
-![Report](fixed-terraform.md)
-![Fixed Terraform](fixed-terraform.md)
+![Report](report.md)
+![Fixed Terraform](fixed-terraform.tf)
 ![Changes Made](changes-made.md)
 
 
