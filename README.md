@@ -14,6 +14,8 @@ I gave Claude access to my GitHub Action workflows, asked him to present finding
   
 **[🔄 Changes Made](changes-made.md)**
 
+**[✅ Summary](screenshots/2.png)**
+
 ## 🚀 Overview
 
 This project demonstrates the future of AI-augmented DevSecOps by creating an MCP server that:
