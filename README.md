@@ -27,7 +27,7 @@ This project demonstrates the future of AI-augmented DevSecOps by creating an MC
 - **Explains** security impacts and implementation notes
 
 ### Key Innovation
-Transforms hours of manual security remediation into seconds of AI-powered analysis, providing exact code fixes for infrastructure vulnerabilities.
+Provides AI-powered analysis and exact code fixes for infrastructure vulnerabilities through natural language interaction.
 
 ## 🛠️ Technical Stack
 
@@ -153,11 +153,11 @@ Retrieves the content of Terraform files from the repository
 - [ ] Cost impact analysis of security remediations
 - [ ] Compliance mapping (CIS, PCI-DSS, HIPAA)
 
-## 📈 Impact Metrics
+## 📈 Impact
 
-- **Time Savings**: 4 hours manual analysis → 30 seconds with AI
 - **Coverage**: 40+ Checkov security rules supported
 - **Accuracy**: Specific remediation code for each finding
+- **Efficiency**: Natural language interface for security remediation
 
 ## 🤝 Contributing
 
