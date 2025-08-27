@@ -124,3 +124,15 @@ The demo Terraform includes security misconfigurations:
 - Terraform knowledge
 
 Note: Contains intentionally vulnerable Terraform code for demonstration. Do not deploy to production.
+
+## Screenshots
+
+- [Checkov security findings](screenshots/1.png)
+- [Claude Desktop prompt](screenshots/2.png)
+- [Analysis summary](screenshots/3.png)
+
+## Generated Documents
+
+- [Security report](documents/report.md)
+- [Fixed Terraform code](documents/fixed-terraform.tf)
+- [Changes made](documents/changes-made.md)
