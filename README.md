@@ -1,6 +1,6 @@
 # Project 11: MCP IaC Security
 
-MCP server analyzing Checkov findings and generating Terraform fixes. GitHub Actions integration for security scanning. Node.js implementation for Claude Desktop.
+MCP server analysing Checkov findings and generating Terraform fixes. GitHub Actions integration for security scanning. Node.js implementation for Claude Desktop.
 
 ## Technologies
 
