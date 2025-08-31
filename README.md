@@ -12,7 +12,7 @@ Node.js • Model Context Protocol • Checkov • Terraform • GitHub Actions 
 - [Claude prompt](screenshots/2.png)
 - [Analysis summary](screenshots/3.png)
 
-## Screenshots
+## Documents
 
 - [Report](documents/report.md)
 - [Fixed Terraform](documents/fixed-terraform.md)
