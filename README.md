@@ -15,5 +15,5 @@ Node.js • Model Context Protocol • Checkov • Terraform • GitHub Actions 
 ## Documents
 
 - [Report](documents/report.md)
-- [Fixed Terraform](documents/fixed-terraform.md)
+- [Fixed Terraform](documents/fixed-terraform.tf)
 - [Changes made](documents/changes-made.md)
