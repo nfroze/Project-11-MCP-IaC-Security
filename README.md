@@ -8,9 +8,11 @@ Node.js • Model Context Protocol • Checkov • Terraform • GitHub Actions 
 
 ## Screenshots
 
-- [Checkov findings](screenshots/1.png)
-- [Claude prompt](screenshots/2.png)
-- [Analysis summary](screenshots/3.png)
+![Checkov findings](screenshots/1.png)
+
+![Claude prompt](screenshots/2.png)
+
+![Analysis summary](screenshots/3.png)
 
 ## Documents
 
